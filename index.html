@@ -1,0 +1,375 @@
+ <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор университетов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .specialty-section {
+            margin-bottom: 30px;
+        }
+
+        .specialty-section label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #34495e;
+        }
+
+        .specialty-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+
+        .specialty-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .table-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            background-color: transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .table-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+
+            .table-input {
+                font-size: 12px;
+                padding: 6px 8px;
+            }
+        }
+
+        /* Стили для PDF */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: none;
+            }
+
+            .save-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="content">
+        <div class="header">
+            <h1>Выбор университетов</h1>
+            <p>Заполните информацию о специальности и интересующих вас вузах</p>
+        </div>
+
+        <div class="content">
+            <div class="specialty-section">
+                <label for="specialty">Специальность/направление обучения:</label>
+                <input 
+                    type="text" 
+                    id="specialty" 
+                    class="specialty-input"
+                    placeholder="Введите специальность или направление обучения"
+                >
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Название университета</th>
+                            <th>Проходные баллы</th>
+                            <th>Количество бюджетных мест</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="table-input" placeholder="Введите название университета"></td>
+                            <td><input type="number" class="table-input" placeholder="Баллы" min="0" max="400"></td>
+                            <td><input type="number" class="table-input" placeholder="Места" min="0"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><input type="text" class="table-input" placeholder="Введите название университета"></td>
+                            <td><input type="number" class="table-input" placeholder="Баллы" min="0" max="400"></td>
+                            <td><input type="number" class="table-input" placeholder="Места" min="0"></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><input type="text" class="table-input" placeholder="Введите название университета"></td>
+                            <td><input type="number" class="table-input" placeholder="Баллы" min="0" max="400"></td>
+                            <td><input type="number" class="table-input" placeholder="Места" min="0"></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><input type="text" class="table-input" placeholder="Введите название университета"></td>
+                            <td><input type="number" class="table-input" placeholder="Баллы" min="0" max="400"></td>
+                            <td><input type="number" class="table-input" placeholder="Места" min="0"></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><input type="text" class="table-input" placeholder="Введите название университета"></td>
+                            <td><input type="number" class="table-input" placeholder="Баллы" min="0" max="400"></td>
+                            <td><input type="number" class="table-input" placeholder="Места" min="0"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="save-btn" onclick="saveToPDF()">
+                💾 Сохранить в PDF
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function saveToPDF() {
+            // Создаем копию контента для PDF
+            const element = document.getElementById('content');
+            const clone = element.cloneNode(true);
+            
+            // Заменяем input элементы на span с их значениями
+            const inputs = clone.querySelectorAll('input');
+            inputs.forEach(input => {
+                const span = document.createElement('span');
+                span.textContent = input.value || (input.placeholder.includes('Введите') ? '' : input.placeholder);
+                span.style.display = 'block';
+                span.style.padding = '8px 12px';
+                span.style.minHeight = '16px';
+                input.parentNode.replaceChild(span, input);
+            });
+
+            // Убираем кнопку сохранения
+            const saveBtn = clone.querySelector('.save-btn');
+            if (saveBtn) {
+                saveBtn.remove();
+            }
+
+            // Настройки для PDF
+            const opt = {
+                margin: 10,
+                filename: 'выбор_университетов.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait',
+                    putOnlyUsedFonts: true
+                }
+            };
+
+            // Генерируем PDF
+            html2pdf().set(opt).from(clone).save().then(() => {
+                console.log('PDF сохранен успешно');
+            }).catch(err => {
+                console.error('Ошибка при создании PDF:', err);
+                alert('Произошла ошибка при создании PDF. Попробуйте еще раз.');
+            });
+        }
+
+        // Автосохранение данных в localStorage
+        function saveToLocalStorage() {
+            const data = {
+                specialty: document.getElementById('specialty').value,
+                universities: []
+            };
+
+            const inputs = document.querySelectorAll('.table-input');
+            for (let i = 0; i < inputs.length; i += 3) {
+                data.universities.push({
+                    name: inputs[i].value,
+                    points: inputs[i + 1].value,
+                    places: inputs[i + 2].value
+                });
+            }
+
+            localStorage.setItem('universityData', JSON.stringify(data));
+        }
+
+        // Загрузка данных из localStorage
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('universityData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('specialty').value = data.specialty || '';
+
+                const inputs = document.querySelectorAll('.table-input');
+                data.universities.forEach((uni, index) => {
+                    if (index < 5) {
+                        const baseIndex = index * 3;
+                        if (inputs[baseIndex]) inputs[baseIndex].value = uni.name || '';
+                        if (inputs[baseIndex + 1]) inputs[baseIndex + 1].value = uni.points || '';
+                        if (inputs[baseIndex + 2]) inputs[baseIndex + 2].value = uni.places || '';
+                    }
+                });
+            }
+        }
+
+        // Добавляем обработчики событий для автосохранения
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+
+            // Сохраняем при каждом изменении
+            document.addEventListener('input', saveToLocalStorage);
+        });
+    </script>
+</body>
+</html>
